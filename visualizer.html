@@ -58,28 +58,33 @@ body {
 }
 #bottom {
 	width:100vw;
-	flex-grow:1;
+	/* flex-grow:1; */
 	display:flex;
 	flex-flow: row;
 }
-#visualizer {
-	width:50vw;
-	position:relative;
-}
+
 #show {
 	width: 100%;
 	height: 100%;
 	position:absolute;
 }
 #editor {
-	flex-grow:1;
-	flex-basis:20vw;
+	/* flex-grow:1;
+	flex-basis:20vw; */
+	width: 50%;
 	display:flex;
+	/* flex-flow: column; */
+}
+
+#visualizer {
+	width:100%;
+	position:relative;
 	flex-flow: column;
 }
+
 #editor-text {
 	width:100%;
-	flex-grow:1;
+	/* flex-grow:1; */
 }
 
 button, #fileLabel {
@@ -141,7 +146,7 @@ button:active, #fileLabel:active {
 }
 
 #codeWrapper {
-	flex-grow:1;
+	/* flex-grow:1; */
 	flex-basis:20vw;
 	max-width:30em;
 	display:block;
@@ -172,7 +177,13 @@ button:active, #fileLabel:active {
 	width: 100%;
 	box-sizing: border-box;
 }
-
+.resizable {
+	resize: horizontal;
+	overflow: auto;
+	border: 1px solid;
+	display: inline-flex;
+	height: 90vh
+}
 </style>
 <body>
 <div id="top">
@@ -188,66 +199,45 @@ button:active, #fileLabel:active {
 </div>
 
 <div id="bottom">
+	<div id="editor" class="resizable">
+		<div id="editor-text">
+		//import the knitout writer code and instantiate it as an object
+		const knitout = require('knitout');
+		k = new knitout.Writer({carriers:['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']});
+
+		// add some headers relevant to this job
+		k.addHeader('Machine','SWGXYZ');
+		k.addHeader('Gauge','15');
+		const Carrier = '7';
+
+		k.inhook(Carrier);
+		for(var i=3;i&gt;=0;i -= 2){
+			k.tuck("-","f"+i,Carrier);
+		}
+		for(var i=0;i&lt;=3;i += 2){
+			k.tuck("+","f"+i,Carrier);
+		}
+
+		for(var i=3;i&gt;=0;i--){
+			k.knit("-","f"+i,Carrier);
+		}
 
 
-<div id="editor">
-<div id="editor-text">
-//import the knitout writer code and instantiate it as an object
-const knitout = require('knitout');
-k = new knitout.Writer({carriers:['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']});
+		k.outhook(Carrier);
 
-// add some headers relevant to this job
-k.addHeader('Machine','SWGXYZ');
-k.addHeader('Gauge','15');
-const Carrier = '7';
+		k.write('wristband.k');
 
-k.inhook(Carrier);
-for(var i=3;i&gt;=0;i -= 2){
-    k.tuck("-","f"+i,Carrier);
-}
-for(var i=0;i&lt;=3;i += 2){
-    k.tuck("+","f"+i,Carrier);
-}
+		</div>
+	</div>
 
-for(var i=3;i&gt;=0;i--){
-    k.knit("-","f"+i,Carrier);
-}
+	<pre id="codeWrapper" style="display:none;">
+		<code id="code1">
+		</code>
+	</pre>
 
-k.xfer("f0","b0");
-k.xfer("f1","bs1");
-k.xfer("f2","b2");
-k.xfer("f3","bs3");
-
-k.xfer("b0","fs0");
-k.xfer("bs1","f1");
-k.xfer("b2","fs2");
-k.xfer("bs3","f3");
-
-k.xfer("fs0", "b0");
-k.xfer("fs2", "b2");
-
-for(var i=0;i&lt;2;i++){
-    k.knit("+","b0",Carrier);
-    k.knit("+","b2",Carrier);
-    k.knit("-","f3",Carrier);
-    k.knit("-","f1",Carrier);
-}
-
-k.outhook(Carrier);
-
-k.write('wristband.k');
-
-</div>
-</div>
-
-<pre id="codeWrapper" style="display:none;">
-<code id="code1">
-</code>
-</pre>
-
-<div id="visualizer">
-<canvas class="ShowKnitout" id="show"></canvas>
-</div>
+	<div id="visualizer">
+		<canvas class="ShowKnitout" id="show"></canvas>
+	</div>
 </div>
 
 <div id="dropTarget"></div>
